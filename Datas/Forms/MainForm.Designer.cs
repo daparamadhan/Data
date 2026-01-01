@@ -1,6 +1,6 @@
 namespace Datas
 {
-    partial class DataSampahForm
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -30,13 +30,13 @@ namespace Datas
         {
             this.SuspendLayout();
             // 
-            // DataSampahForm
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Name = "DataSampahForm";
-            this.Text = "DataSampahForm";
+            this.Name = "MainForm";
+            this.Text = "MainForm";
             this.ResumeLayout(false);
 
         }

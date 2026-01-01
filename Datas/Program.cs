@@ -16,7 +16,7 @@ namespace Datas
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new DataSampahForm());
+            Application.Run(new MainForm());
         }
     }
 }
