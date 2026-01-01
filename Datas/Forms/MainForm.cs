@@ -26,7 +26,7 @@ namespace Datas
         private void KoneksiMongo()
         {
             string connectionUri =
-                "mongodb+srv://daparamdnnn_db_user:rxgTiPOuzcB5lFRe@jabar.mgjaupi.mongodb.net/?appName=Jabar";
+                "mongodb+srv://teman_dapa:ijal1234@jabar.mgjaupi.mongodb.net/?appName=Jabar";
 
             var client = new MongoClient(connectionUri);
 
