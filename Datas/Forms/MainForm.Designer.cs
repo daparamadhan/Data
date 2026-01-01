@@ -65,9 +65,9 @@ namespace Datas
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(552, 31);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(58, 13);
+            this.label1.Size = new System.Drawing.Size(59, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "kabupaten";
+            this.label1.Text = "Kabupaten";
             // 
             // label2
             // 
