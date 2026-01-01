@@ -22,9 +22,10 @@ namespace Datas
         public MainForm()
         {
             InitializeComponent();
-            KoneksiMongo();
+            KoneksiMongo(); 
 
-            // Inisialisasi Kontrol sesuai permintaan spesifik
+            LoadData();
+
             InitSpecificControls();
             InitMistralSystemMessage();
         }

@@ -28,6 +28,7 @@ namespace Datas
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -54,6 +55,8 @@ namespace Datas
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridView1.BackgroundColor = System.Drawing.Color.White;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(4, 13);
             this.dataGridView1.Name = "dataGridView1";
@@ -75,7 +78,7 @@ namespace Datas
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(552, 70);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(68, 13);
+            this.label2.Size = new System.Drawing.Size(73, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "Jenis Sampah";
             // 
@@ -232,9 +235,6 @@ namespace Datas
             // numericUpDown1
             // 
             this.numericUpDown1.Location = new System.Drawing.Point(552, 134);
-            // 
-            // PENTING: Set Maksimum Angka (Defaultnya cuma 100)
-            // 
             this.numericUpDown1.Maximum = new decimal(new int[] {
             100000000,
             0,
@@ -249,6 +249,8 @@ namespace Datas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(770, 561);
             this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.comboBox3);
