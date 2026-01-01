@@ -92,9 +92,17 @@ namespace Datas
                         comboJenis.SelectedIndex = -1;
                 }
 
-                // 2. Set TextBox3 (Jumlah)
-                var tbJumlah = GetControl<TextBox>("textBox3");
-                if (tbJumlah != null) tbJumlah.Text = item.Jumlah.ToString();
+                // 2. Set NumericUpDown (Jumlah) -> PERUBAHAN DISINI
+                var nudJumlah = GetControl<NumericUpDown>("numericUpDown1");
+                if (nudJumlah != null)
+                {
+                    // Pastikan nilai tidak melebihi batas Max/Min kontrol numeric
+                    decimal val = item.Jumlah;
+                    if (val > nudJumlah.Maximum) val = nudJumlah.Maximum;
+                    if (val < nudJumlah.Minimum) val = nudJumlah.Minimum;
+
+                    nudJumlah.Value = val;
+                }
 
                 // 3. Set ComboBox1 (Kabupaten/Lokasi)
                 var comboKab = GetControl<ComboBox>("comboBox1");
@@ -210,18 +218,20 @@ namespace Datas
             {
                 // Ambil kontrol spesifik
                 var comboJenis = GetControl<ComboBox>("comboBox3"); // Jenis
-                var tbJumlah = GetControl<TextBox>("textBox3");
+                var nudJumlah = GetControl<NumericUpDown>("numericUpDown1"); // PERUBAHAN: NumericUpDown
                 var comboKab = GetControl<ComboBox>("comboBox1");   // Kabupaten
 
-                if (comboJenis == null || tbJumlah == null || comboKab == null)
+                if (comboJenis == null || nudJumlah == null || comboKab == null)
                 {
-                    MessageBox.Show("Kontrol form tidak lengkap.");
+                    MessageBox.Show("Kontrol form tidak lengkap (cek nama numericUpDown1).");
                     return;
                 }
 
                 if (comboJenis.SelectedItem == null) { MessageBox.Show("Pilih Jenis Sampah (Combo 3)"); return; }
                 if (comboKab.SelectedItem == null) { MessageBox.Show("Pilih Kabupaten (Combo 1)"); return; }
-                if (!int.TryParse(tbJumlah.Text, out int jumlah)) { MessageBox.Show("Jumlah harus angka"); return; }
+
+                // Tidak perlu TryParse karena NumericUpDown sudah pasti angka
+                int jumlah = (int)nudJumlah.Value;
 
                 var s = new Sampah
                 {
@@ -252,12 +262,14 @@ namespace Datas
                 if (current == null) return;
 
                 var comboJenis = GetControl<ComboBox>("comboBox3");
-                var tbJumlah = GetControl<TextBox>("textBox3");
+                var nudJumlah = GetControl<NumericUpDown>("numericUpDown1"); // PERUBAHAN: NumericUpDown
                 var comboKab = GetControl<ComboBox>("comboBox1");
 
                 if (comboJenis.SelectedItem == null) { MessageBox.Show("Pilih Jenis Sampah"); return; }
                 if (comboKab.SelectedItem == null) { MessageBox.Show("Pilih Kabupaten"); return; }
-                if (!int.TryParse(tbJumlah.Text, out int jumlah)) { MessageBox.Show("Jumlah harus angka"); return; }
+
+                // Tidak perlu TryParse
+                int jumlah = (int)nudJumlah.Value;
 
                 var update = Builders<Sampah>.Update
                     .Set(x => x.Nama, comboJenis.SelectedItem.ToString())
@@ -303,13 +315,15 @@ namespace Datas
         private void button4_Click(object sender, EventArgs e)
         {
             var comboJenis = GetControl<ComboBox>("comboBox3");
-            var tbJumlah = GetControl<TextBox>("textBox3");
+            var nudJumlah = GetControl<NumericUpDown>("numericUpDown1"); // PERUBAHAN
             var comboKab = GetControl<ComboBox>("comboBox1");
             var comboModel = GetControl<ComboBox>("comboBox2");
 
             if (comboJenis != null) comboJenis.SelectedIndex = -1;
             if (comboKab != null) comboKab.SelectedIndex = -1;
-            if (tbJumlah != null) tbJumlah.Clear();
+
+            // PERUBAHAN: Reset NumericUpDown ke 0
+            if (nudJumlah != null) nudJumlah.Value = 0;
 
             // Opsional: Reset model ke default
             if (comboModel != null && comboModel.Items.Count > 0) comboModel.SelectedIndex = 0;
@@ -338,8 +352,8 @@ namespace Datas
 
             // Validasi apakah model dipilih dari ComboBox 2
             string selectedModel = (comboModel != null && comboModel.SelectedItem != null)
-                                    ? comboModel.SelectedItem.ToString()
-                                    : "mistral-tiny"; // Fallback default
+                                                ? comboModel.SelectedItem.ToString()
+                                                : "mistral-tiny"; // Fallback default
 
             if (!string.IsNullOrEmpty(apiKey))
             {
@@ -404,8 +418,6 @@ namespace Datas
         // ===============================
         private void button5_Click(object sender, EventArgs e)
         {
-            // Sama seperti kode sebelumnya (iTextSharp logic)
-            // Pastikan Anda sudah install NuGet iTextSharp
             try
             {
                 using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "PDF|*.pdf", FileName = "LaporanSampah.pdf" })
@@ -447,8 +459,8 @@ namespace Datas
             }
         }
 
-        // Event handler kosong (biarkan jika terikat designer)
-        private void textBox3_TextChanged(object sender, EventArgs e) { }
+        // Event handler kosong
+        private void textBox3_TextChanged(object sender, EventArgs e) { } // Sudah tidak dipakai, tapi dibiarkan agar tidak error designer
         private void textBox4_TextChanged(object sender, EventArgs e) { }
         private void richTextBox1_TextChanged(object sender, EventArgs e) { }
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e) { }
@@ -457,10 +469,14 @@ namespace Datas
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e) { }
         private void button7_Click(object sender, EventArgs e)
         {
-            // Tombol tambahan untuk clear chat manual
             var log = GetControl<RichTextBox>("richTextBox1");
             if (log != null) log.Clear();
             InitMistralSystemMessage();
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+
         }
     }
 
