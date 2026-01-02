@@ -52,7 +52,6 @@ namespace Datas
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(522, 315);
             this.dataGridView1.TabIndex = 0;
-            // BARIS ERROR DIHAPUS DI SINI
             // 
             // label1
             // 
@@ -152,7 +151,6 @@ namespace Datas
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(590, 19);
             this.textBox4.TabIndex = 14;
-            // BARIS ERROR DIHAPUS DI SINI
             // 
             // button6
             // 
@@ -184,7 +182,6 @@ namespace Datas
             this.richTextBox1.Size = new System.Drawing.Size(534, 109);
             this.richTextBox1.TabIndex = 17;
             this.richTextBox1.Text = "";
-            // BARIS ERROR DIHAPUS DI SINI
             // 
             // dateTimePicker1
             // 
@@ -193,7 +190,6 @@ namespace Datas
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(199, 19);
             this.dateTimePicker1.TabIndex = 18;
-            // BARIS ERROR DIHAPUS DI SINI
             // 
             // comboBox1
             // 
@@ -203,7 +199,6 @@ namespace Datas
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(201, 22);
             this.comboBox1.TabIndex = 19;
-            // BARIS ERROR DIHAPUS DI SINI
             // 
             // comboBox2
             // 
@@ -213,7 +208,6 @@ namespace Datas
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(121, 22);
             this.comboBox2.TabIndex = 20;
-            // BARIS ERROR DIHAPUS DI SINI
             // 
             // textBox1
             // 
@@ -224,7 +218,7 @@ namespace Datas
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(100, 19);
             this.textBox1.TabIndex = 21;
-            this.textBox1.Text = "YOUR_API_KEY_HERE";
+            this.textBox1.Text = "ETpx47bY8itsgEKzinopNNY7a8xnp4F6\r\n";
             // 
             // comboBox3
             // 
@@ -234,7 +228,6 @@ namespace Datas
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(201, 22);
             this.comboBox3.TabIndex = 22;
-            // BARIS ERROR DIHAPUS DI SINI
             // 
             // numericUpDown1
             // 
@@ -248,7 +241,6 @@ namespace Datas
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(201, 19);
             this.numericUpDown1.TabIndex = 23;
-            // BARIS ERROR DIHAPUS DI SINI
             // 
             // MainForm
             // 

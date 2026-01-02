@@ -178,7 +178,7 @@ namespace Datas
 
         private TextBox FindApiKeyBox()
         {
-            return GetControl<TextBox>("textBoxApiKey") ?? GetControl<TextBox>("textBox5");
+            return GetControl<TextBox>("textBox1");
         }
 
         // ===============================
@@ -273,21 +273,25 @@ namespace Datas
             input.Clear();
 
             string apiKey = FindApiKeyBox()?.Text ?? "";
-            string model = comboModel?.SelectedItem?.ToString() ?? "mistral-tiny";
+            MessageBox.Show("API Key: " + apiKey); // Debugging log
 
-            if (!string.IsNullOrEmpty(apiKey))
-            {
-                conversation.Add(new ChatMessage { role = "user", content = userMsg });
-                try
-                {
-                    string reply = await GetMistralResponse(apiKey, model).ConfigureAwait(false);
-                    this.Invoke((Action)(() => log.AppendText($"Mistral: {reply}{Environment.NewLine}")));
-                }
-                catch (Exception ex) { this.Invoke((Action)(() => log.AppendText("Error: " + ex.Message + Environment.NewLine))); }
-            }
-            else
+            if (string.IsNullOrEmpty(apiKey))
             {
                 log.AppendText("Bot Lokal: Halo! Masukkan API Key untuk chat pintar." + Environment.NewLine);
+                return;
+            }
+
+            string model = comboModel?.SelectedItem?.ToString() ?? "mistral-tiny";
+
+            conversation.Add(new ChatMessage { role = "user", content = userMsg });
+            try
+            {
+                string reply = await GetMistralResponse(apiKey, model).ConfigureAwait(false);
+                this.Invoke((Action)(() => log.AppendText($"Mistral: {reply}{Environment.NewLine}")));
+            }
+            catch (Exception ex)
+            {
+                this.Invoke((Action)(() => log.AppendText("Error: " + ex.Message + Environment.NewLine)));
             }
         }
 
