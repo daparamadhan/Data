@@ -1,12 +1,13 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using Datas.Forms;
 using MongoDB.Driver;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using System.Windows.Forms;
 
 namespace Datas
 {
@@ -22,12 +23,13 @@ namespace Datas
         public MainForm()
         {
             InitializeComponent();
-            KoneksiMongo(); 
-
+            KoneksiMongo();
             LoadData();
-
             InitSpecificControls();
             InitMistralSystemMessage();
+
+            // OTOMATIS: Menghubungkan event klik tombol 'X' ke logika nomor 2
+            this.FormClosing += MainForm_FormClosing;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -35,15 +37,38 @@ namespace Datas
             LoadData();
         }
 
+        // ============================================================
+        // LOGIKA KEMBALI KE LOGIN (SAAT TOMBOL X DIKLIK)
+        // ============================================================
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Jika user menutup form secara manual (klik tombol X)
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                // Tampilkan kembali Form Login (Form1)
+                Form1 loginForm = new Form1();
+                loginForm.Show();
+
+                // Biarkan MainForm tertutup
+            }
+        }
+
         // ===============================
         // KONEKSI MONGODB
         // ===============================
         private void KoneksiMongo()
         {
-            string connectionUri = "mongodb+srv://teman_dapa:ijal1234@jabar.mgjaupi.mongodb.net/?appName=Jabar";
-            var client = new MongoClient(connectionUri);
-            var database = client.GetDatabase("datas");
-            collection = database.GetCollection<Sampah>("sampah");
+            try
+            {
+                string connectionUri = "mongodb+srv://teman_dapa:ijal1234@jabar.mgjaupi.mongodb.net/?appName=Jabar";
+                var client = new MongoClient(connectionUri);
+                var database = client.GetDatabase("datas");
+                collection = database.GetCollection<Sampah>("sampah");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Gagal koneksi ke database: " + ex.Message);
+            }
         }
 
         // ===============================
@@ -64,16 +89,6 @@ namespace Datas
             }
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            // Handled in SelectionChanged
-        }
-
-        private void DgvSelectionChanged(object sender, EventArgs e)
-        {
-            FillFormFromSelection();
-        }
-
         // Mengisi form saat tabel diklik
         private void FillFormFromSelection()
         {
@@ -83,108 +98,70 @@ namespace Datas
 
             try
             {
-                // 1. Set ComboBox3 (Jenis Sampah)
                 var comboJenis = GetControl<ComboBox>("comboBox3");
-                if (comboJenis != null)
-                {
-                    if (!string.IsNullOrEmpty(item.Nama) && comboJenis.Items.Contains(item.Nama))
-                        comboJenis.SelectedItem = item.Nama;
-                    else
-                        comboJenis.SelectedIndex = -1;
-                }
+                if (comboJenis != null && !string.IsNullOrEmpty(item.Nama))
+                    comboJenis.SelectedItem = item.Nama;
 
-                // 2. Set NumericUpDown (Jumlah) -> PERUBAHAN DISINI
                 var nudJumlah = GetControl<NumericUpDown>("numericUpDown1");
                 if (nudJumlah != null)
                 {
-                    // Pastikan nilai tidak melebihi batas Max/Min kontrol numeric
                     decimal val = item.Jumlah;
                     if (val > nudJumlah.Maximum) val = nudJumlah.Maximum;
                     if (val < nudJumlah.Minimum) val = nudJumlah.Minimum;
-
                     nudJumlah.Value = val;
                 }
 
-                // 3. Set ComboBox1 (Kabupaten/Lokasi)
                 var comboKab = GetControl<ComboBox>("comboBox1");
-                if (comboKab != null)
-                {
-                    if (!string.IsNullOrEmpty(item.Lokasi) && comboKab.Items.Contains(item.Lokasi))
-                        comboKab.SelectedItem = item.Lokasi;
-                    else
-                        comboKab.SelectedIndex = -1;
-                }
+                if (comboKab != null && !string.IsNullOrEmpty(item.Lokasi))
+                    comboKab.SelectedItem = item.Lokasi;
             }
             catch { }
         }
 
+        private void DgvSelectionChanged(object sender, EventArgs e)
+        {
+            FillFormFromSelection();
+        }
+
         // ===============================
-        // INISIALISASI KONTROL (MAPPING BARU)
+        // INISIALISASI KONTROL
         // ===============================
         private void InitSpecificControls()
         {
-            // ---------------------------------------------------------
-            // 1. MAPPING COMBOBOX 1 -> KABUPATEN
-            // ---------------------------------------------------------
+            // 1. ComboBox Kabupaten
             var comboKab = GetControl<ComboBox>("comboBox1");
             if (comboKab != null)
             {
                 comboKab.Items.Clear();
-                string[] kabupatenList = new string[] {
-                    "Kabupaten Bandung", "Kabupaten Bandung Barat", "Kabupaten Bekasi",
-                    "Kabupaten Bogor", "Kabupaten Ciamis", "Kabupaten Cianjur",
-                    "Kabupaten Cirebon", "Kabupaten Garut", "Kabupaten Indramayu",
-                    "Kabupaten Karawang", "Kabupaten Kuningan", "Kabupaten Majalengka",
-                    "Kabupaten Pangandaran", "Kabupaten Purwakarta", "Kabupaten Subang",
-                    "Kabupaten Sukabumi", "Kabupaten Sumedang", "Kabupaten Tasikmalaya",
-                    "Kota Bandung", "Kota Bogor", "Kota Bekasi", "Kota Cirebon", "Kota Depok"
-                };
-                comboKab.Items.AddRange(kabupatenList);
-                comboKab.DropDownStyle = ComboBoxStyle.DropDownList; // Agar user tidak bisa ketik manual
+                comboKab.Items.AddRange(new string[] {
+                    "Kabupaten Bandung", "Kabupaten Bekasi", "Kabupaten Bogor",
+                    "Kabupaten Cirebon", "Kota Bandung", "Kota Bogor", "Kota Depok"
+                });
+                comboKab.DropDownStyle = ComboBoxStyle.DropDownList;
             }
 
-            // ---------------------------------------------------------
-            // 2. MAPPING COMBOBOX 2 -> MODEL MISTRAL AI
-            // ---------------------------------------------------------
+            // 2. ComboBox Model AI
             var comboModel = GetControl<ComboBox>("comboBox2");
             if (comboModel != null)
             {
                 comboModel.Items.Clear();
                 comboModel.Items.AddRange(new string[] { "mistral-tiny", "mistral-small", "open-mistral-7b" });
-                comboModel.SelectedIndex = 0; // Default select index 0
+                comboModel.SelectedIndex = 0;
                 comboModel.DropDownStyle = ComboBoxStyle.DropDownList;
             }
 
-            // ---------------------------------------------------------
-            // 3. MAPPING COMBOBOX 3 -> JENIS SAMPAH
-            // ---------------------------------------------------------
+            // 3. ComboBox Jenis Sampah
             var comboJenis = GetControl<ComboBox>("comboBox3");
             if (comboJenis != null)
             {
                 comboJenis.Items.Clear();
-                comboJenis.Items.AddRange(new string[] {
-                    "Organik", "Anorganik", "Plastik", "Kertas",
-                    "Logam", "Kaca", "Elektronik", "B3 (Bahan Berbahaya dan Beracun)"
-                });
-                comboJenis.SelectedIndex = -1;
+                comboJenis.Items.AddRange(new string[] { "Organik", "Anorganik", "Plastik", "Kertas", "Logam", "B3" });
                 comboJenis.DropDownStyle = ComboBoxStyle.DropDownList;
             }
 
-            // Setup API Key Box (Masking Password)
+            // Setup API Key (Masking)
             var apiBox = FindApiKeyBox();
             if (apiBox != null) apiBox.PasswordChar = '*';
-
-            // Setup Tombol Clear Chat
-            var clearBtn = this.Controls.OfType<Button>().FirstOrDefault(b => b.Text != null && (b.Text.Equals("Clear") || b.Text.Equals("Bersihkan")));
-            if (clearBtn != null)
-            {
-                clearBtn.Click += (s, e) =>
-                {
-                    var log = GetControl<RichTextBox>("richTextBox1");
-                    if (log != null) log.Clear();
-                    InitMistralSystemMessage();
-                };
-            }
         }
 
         private void InitMistralSystemMessage()
@@ -193,9 +170,7 @@ namespace Datas
             conversation.Add(new ChatMessage { role = "system", content = "Anda adalah AI asisten pengelolaan data sampah Jawa Barat." });
         }
 
-        // ===============================
-        // HELPER: Get Control by Name
-        // ===============================
+        // Helper: Cari kontrol berdasarkan nama
         private T GetControl<T>(string name) where T : Control
         {
             return this.Controls.Find(name, true).FirstOrDefault() as T;
@@ -203,41 +178,30 @@ namespace Datas
 
         private TextBox FindApiKeyBox()
         {
-            // Cari textbox untuk API Key (bisa disesuaikan nama kontrolnya)
-            return GetControl<TextBox>("textBoxApiKey") ??
-                   GetControl<TextBox>("textBoxApi") ??
-                   GetControl<TextBox>("textBox5") ?? // Asumsi textBox5
-                   GetControl<TextBox>("textBox1");   // Fallback jika textBox1 dipakai untuk API
+            return GetControl<TextBox>("textBoxApiKey") ?? GetControl<TextBox>("textBox5");
         }
 
         // ===============================
-        // CRUD: CREATE (Button 1)
+        // CRUD: CREATE, UPDATE, DELETE
         // ===============================
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e) // CREATE
         {
             try
             {
-                // Ambil kontrol spesifik
-                var comboJenis = GetControl<ComboBox>("comboBox3"); // Jenis
-                var nudJumlah = GetControl<NumericUpDown>("numericUpDown1"); // PERUBAHAN: NumericUpDown
-                var comboKab = GetControl<ComboBox>("comboBox1");   // Kabupaten
+                var comboJenis = GetControl<ComboBox>("comboBox3");
+                var nudJumlah = GetControl<NumericUpDown>("numericUpDown1");
+                var comboKab = GetControl<ComboBox>("comboBox1");
 
-                if (comboJenis == null || nudJumlah == null || comboKab == null)
+                if (comboJenis?.SelectedItem == null || comboKab?.SelectedItem == null)
                 {
-                    MessageBox.Show("Kontrol form tidak lengkap (cek nama numericUpDown1).");
+                    MessageBox.Show("Mohon lengkapi Jenis Sampah dan Lokasi.");
                     return;
                 }
-
-                if (comboJenis.SelectedItem == null) { MessageBox.Show("Pilih Jenis Sampah (Combo 3)"); return; }
-                if (comboKab.SelectedItem == null) { MessageBox.Show("Pilih Kabupaten (Combo 1)"); return; }
-
-                // Tidak perlu TryParse karena NumericUpDown sudah pasti angka
-                int jumlah = (int)nudJumlah.Value;
 
                 var s = new Sampah
                 {
                     Nama = comboJenis.SelectedItem.ToString(),
-                    Jumlah = jumlah,
+                    Jumlah = (int)nudJumlah.Value,
                     Lokasi = comboKab.SelectedItem.ToString()
                 };
 
@@ -245,136 +209,85 @@ namespace Datas
                 LoadData();
                 MessageBox.Show("Data berhasil ditambahkan.");
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error Create: " + ex.Message);
-            }
+            catch (Exception ex) { MessageBox.Show("Error Create: " + ex.Message); }
         }
 
-        // ===============================
-        // CRUD: UPDATE (Button 2)
-        // ===============================
-        private void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e) // UPDATE
         {
             try
             {
-                if (dataGridView1.CurrentRow == null) { MessageBox.Show("Pilih data di tabel dulu."); return; }
+                if (dataGridView1.CurrentRow == null) return;
                 var current = dataGridView1.CurrentRow.DataBoundItem as Sampah;
-                if (current == null) return;
 
                 var comboJenis = GetControl<ComboBox>("comboBox3");
-                var nudJumlah = GetControl<NumericUpDown>("numericUpDown1"); // PERUBAHAN: NumericUpDown
+                var nudJumlah = GetControl<NumericUpDown>("numericUpDown1");
                 var comboKab = GetControl<ComboBox>("comboBox1");
-
-                if (comboJenis.SelectedItem == null) { MessageBox.Show("Pilih Jenis Sampah"); return; }
-                if (comboKab.SelectedItem == null) { MessageBox.Show("Pilih Kabupaten"); return; }
-
-                // Tidak perlu TryParse
-                int jumlah = (int)nudJumlah.Value;
 
                 var update = Builders<Sampah>.Update
                     .Set(x => x.Nama, comboJenis.SelectedItem.ToString())
-                    .Set(x => x.Jumlah, jumlah)
+                    .Set(x => x.Jumlah, (int)nudJumlah.Value)
                     .Set(x => x.Lokasi, comboKab.SelectedItem.ToString());
 
                 collection.UpdateOne(x => x.Id == current.Id, update);
                 LoadData();
                 MessageBox.Show("Data berhasil diupdate.");
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error Update: " + ex.Message);
-            }
+            catch (Exception ex) { MessageBox.Show("Error Update: " + ex.Message); }
         }
 
-        // ===============================
-        // CRUD: DELETE (Button 3)
-        // ===============================
-        private void button3_Click(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e) // DELETE
         {
             try
             {
-                if (dataGridView1.CurrentRow == null) { MessageBox.Show("Pilih data dulu"); return; }
+                if (dataGridView1.CurrentRow == null) return;
                 var current = dataGridView1.CurrentRow.DataBoundItem as Sampah;
-                if (current == null) return;
-
                 if (MessageBox.Show("Hapus item ini?", "Konfirmasi", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     collection.DeleteOne(x => x.Id == current.Id);
                     LoadData();
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error Delete: " + ex.Message);
-            }
+            catch (Exception ex) { MessageBox.Show("Error Delete: " + ex.Message); }
         }
 
-        // ===============================
-        // CLEAR FORM (Button 4)
-        // ===============================
-        private void button4_Click(object sender, EventArgs e)
+        private void button4_Click(object sender, EventArgs e) // CLEAR FORM
         {
-            var comboJenis = GetControl<ComboBox>("comboBox3");
-            var nudJumlah = GetControl<NumericUpDown>("numericUpDown1"); // PERUBAHAN
-            var comboKab = GetControl<ComboBox>("comboBox1");
-            var comboModel = GetControl<ComboBox>("comboBox2");
-
-            if (comboJenis != null) comboJenis.SelectedIndex = -1;
-            if (comboKab != null) comboKab.SelectedIndex = -1;
-
-            // PERUBAHAN: Reset NumericUpDown ke 0
-            if (nudJumlah != null) nudJumlah.Value = 0;
-
-            // Opsional: Reset model ke default
-            if (comboModel != null && comboModel.Items.Count > 0) comboModel.SelectedIndex = 0;
+            GetControl<ComboBox>("comboBox3").SelectedIndex = -1;
+            GetControl<ComboBox>("comboBox1").SelectedIndex = -1;
+            GetControl<NumericUpDown>("numericUpDown1").Value = 0;
         }
 
         // ===============================
-        // MISTRAL AI CHAT (Button 6)
+        // MISTRAL AI CHAT
         // ===============================
         private async void button6_Click(object sender, EventArgs e)
         {
             var log = GetControl<RichTextBox>("richTextBox1");
             var input = GetControl<TextBox>("textBox4");
-
-            // AMBIL MODEL DARI COMBOBOX 2
             var comboModel = GetControl<ComboBox>("comboBox2");
 
-            if (log == null || input == null) return;
-            string userMsg = input.Text.Trim();
-            if (string.IsNullOrEmpty(userMsg)) return;
+            if (string.IsNullOrEmpty(input.Text)) return;
 
+            string userMsg = input.Text;
             log.AppendText("User: " + userMsg + Environment.NewLine);
             input.Clear();
 
-            var apiBox = FindApiKeyBox();
-            string apiKey = apiBox != null ? apiBox.Text : "";
-
-            // Validasi apakah model dipilih dari ComboBox 2
-            string selectedModel = (comboModel != null && comboModel.SelectedItem != null)
-                                                ? comboModel.SelectedItem.ToString()
-                                                : "mistral-tiny"; // Fallback default
+            string apiKey = FindApiKeyBox()?.Text ?? "";
+            string model = comboModel?.SelectedItem?.ToString() ?? "mistral-tiny";
 
             if (!string.IsNullOrEmpty(apiKey))
             {
-                // Panggil API Mistral
                 conversation.Add(new ChatMessage { role = "user", content = userMsg });
                 try
                 {
-                    string reply = await GetMistralResponse(apiKey, selectedModel).ConfigureAwait(false);
-                    this.Invoke((Action)(() => log.AppendText($"Mistral ({selectedModel}): {reply}{Environment.NewLine}")));
+                    string reply = await GetMistralResponse(apiKey, model).ConfigureAwait(false);
+                    this.Invoke((Action)(() => log.AppendText($"Mistral: {reply}{Environment.NewLine}")));
                 }
-                catch (Exception ex)
-                {
-                    this.Invoke((Action)(() => log.AppendText("Error API: " + ex.Message + Environment.NewLine)));
-                }
+                catch (Exception ex) { this.Invoke((Action)(() => log.AppendText("Error: " + ex.Message + Environment.NewLine))); }
             }
             else
             {
-                // Fallback Chatbot Lokal
-                string reply = GetChatbotResponse(userMsg);
-                log.AppendText("Bot Lokal: " + reply + Environment.NewLine);
+                log.AppendText("Bot Lokal: Halo! Masukkan API Key untuk chat pintar." + Environment.NewLine);
             }
         }
 
@@ -382,55 +295,33 @@ namespace Datas
         {
             httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + apiKey);
-
-            var requestBody = new
-            {
-                model = model,
-                messages = conversation,
-                temperature = 0.7
-            };
-
+            var requestBody = new { model = model, messages = conversation, temperature = 0.7 };
             string json = JsonConvert.SerializeObject(requestBody);
             using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
             {
                 var res = await httpClient.PostAsync(MISTRAL_API_URL, content).ConfigureAwait(false);
                 var responseText = await res.Content.ReadAsStringAsync().ConfigureAwait(false);
-
                 if (!res.IsSuccessStatusCode) throw new Exception(responseText);
-
                 dynamic result = JsonConvert.DeserializeObject(responseText);
                 string reply = result.choices[0].message.content;
-
                 conversation.Add(new ChatMessage { role = "assistant", content = reply });
                 return reply;
             }
         }
 
-        private string GetChatbotResponse(string input)
-        {
-            input = input.ToLower();
-            if (input.Contains("halo")) return "Halo! Masukkan API Key untuk chat pintar.";
-            if (input.Contains("jumlah")) return "Total data: " + collection.CountDocuments(_ => true);
-            return "Saya bot sederhana. Gunakan Mistral API untuk fitur lebih lengkap.";
-        }
-
         // ===============================
-        // EXPORT PDF (Button 5)
+        // EXPORT PDF
         // ===============================
         private void button5_Click(object sender, EventArgs e)
         {
-            try
+            using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "PDF|*.pdf", FileName = "LaporanSampah.pdf" })
             {
-                using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "PDF|*.pdf", FileName = "LaporanSampah.pdf" })
+                if (sfd.ShowDialog() == DialogResult.OK)
                 {
-                    if (sfd.ShowDialog() == DialogResult.OK)
-                    {
-                        ExportToPdf(sfd.FileName);
-                        MessageBox.Show("Export PDF Berhasil!");
-                    }
+                    ExportToPdf(sfd.FileName);
+                    MessageBox.Show("Export PDF Berhasil!");
                 }
             }
-            catch (Exception ex) { MessageBox.Show("Gagal Export: " + ex.Message); }
         }
 
         private void ExportToPdf(string path)
@@ -443,12 +334,8 @@ namespace Datas
                 doc.Open();
                 doc.Add(new iTextSharp.text.Paragraph("Laporan Data Sampah Jawa Barat"));
                 doc.Add(new iTextSharp.text.Paragraph("\n"));
-
                 var table = new iTextSharp.text.pdf.PdfPTable(3);
-                table.AddCell("Jenis Sampah");
-                table.AddCell("Jumlah (Kg/Ton)");
-                table.AddCell("Kabupaten/Lokasi");
-
+                table.AddCell("Jenis Sampah"); table.AddCell("Jumlah"); table.AddCell("Lokasi");
                 foreach (var item in list)
                 {
                     table.AddCell(item.Nama ?? "-");
@@ -460,24 +347,10 @@ namespace Datas
             }
         }
 
-        // Event handler kosong
-        private void textBox3_TextChanged(object sender, EventArgs e) { } // Sudah tidak dipakai, tapi dibiarkan agar tidak error designer
-        private void textBox4_TextChanged(object sender, EventArgs e) { }
-        private void richTextBox1_TextChanged(object sender, EventArgs e) { }
-        private void dateTimePicker1_ValueChanged(object sender, EventArgs e) { }
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e) { }
-        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e) { }
-        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e) { }
-        private void button7_Click(object sender, EventArgs e)
+        private void button7_Click(object sender, EventArgs e) // Clear Chat
         {
-            var log = GetControl<RichTextBox>("richTextBox1");
-            if (log != null) log.Clear();
+            GetControl<RichTextBox>("richTextBox1")?.Clear();
             InitMistralSystemMessage();
-        }
-
-        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
-        {
-
         }
     }
 

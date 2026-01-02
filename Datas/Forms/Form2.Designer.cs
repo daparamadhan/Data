@@ -116,6 +116,7 @@
             // 
             this.txtBoxPassword.Location = new System.Drawing.Point(401, 176);
             this.txtBoxPassword.Name = "txtBoxPassword";
+            this.txtBoxPassword.PasswordChar = '*';
             this.txtBoxPassword.Size = new System.Drawing.Size(215, 20);
             this.txtBoxPassword.TabIndex = 7;
             // 
@@ -148,6 +149,7 @@
             this.button1.TabIndex = 10;
             this.button1.Text = "BUAT";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form2
             // 

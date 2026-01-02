@@ -84,6 +84,7 @@
             // 
             this.txtBoxPassword.Location = new System.Drawing.Point(248, 181);
             this.txtBoxPassword.Name = "txtBoxPassword";
+            this.txtBoxPassword.PasswordChar = '*';
             this.txtBoxPassword.Size = new System.Drawing.Size(294, 20);
             this.txtBoxPassword.TabIndex = 4;
             // 
@@ -95,6 +96,7 @@
             this.button1.TabIndex = 5;
             this.button1.Text = "LOGIN";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.buttonLogin_Click);
             // 
             // button2
             // 
@@ -139,8 +141,5 @@
         private System.Windows.Forms.TextBox txtBoxPassword;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
-
-        private System.Windows.Forms.TextBox textBoxUsername;
-        private System.Windows.Forms.TextBox textBoxPassword;
     }
 }

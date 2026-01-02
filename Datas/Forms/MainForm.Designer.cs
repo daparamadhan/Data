@@ -2,15 +2,8 @@ namespace Datas
 {
     partial class MainForm
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,10 +15,6 @@ namespace Datas
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
@@ -63,7 +52,7 @@ namespace Datas
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(522, 315);
             this.dataGridView1.TabIndex = 0;
-            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            // BARIS ERROR DIHAPUS DI SINI
             // 
             // label1
             // 
@@ -163,7 +152,7 @@ namespace Datas
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(590, 19);
             this.textBox4.TabIndex = 14;
-            this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
+            // BARIS ERROR DIHAPUS DI SINI
             // 
             // button6
             // 
@@ -195,7 +184,7 @@ namespace Datas
             this.richTextBox1.Size = new System.Drawing.Size(534, 109);
             this.richTextBox1.TabIndex = 17;
             this.richTextBox1.Text = "";
-            this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
+            // BARIS ERROR DIHAPUS DI SINI
             // 
             // dateTimePicker1
             // 
@@ -204,7 +193,7 @@ namespace Datas
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(199, 19);
             this.dateTimePicker1.TabIndex = 18;
-            this.dateTimePicker1.ValueChanged += new System.EventHandler(this.dateTimePicker1_ValueChanged);
+            // BARIS ERROR DIHAPUS DI SINI
             // 
             // comboBox1
             // 
@@ -214,7 +203,7 @@ namespace Datas
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(201, 22);
             this.comboBox1.TabIndex = 19;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // BARIS ERROR DIHAPUS DI SINI
             // 
             // comboBox2
             // 
@@ -224,7 +213,7 @@ namespace Datas
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(121, 22);
             this.comboBox2.TabIndex = 20;
-            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
+            // BARIS ERROR DIHAPUS DI SINI
             // 
             // textBox1
             // 
@@ -235,7 +224,7 @@ namespace Datas
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(100, 19);
             this.textBox1.TabIndex = 21;
-            this.textBox1.Text = "1OK8MCt81FSzafj5HOwKXYownGqPQICk";
+            this.textBox1.Text = "YOUR_API_KEY_HERE";
             // 
             // comboBox3
             // 
@@ -245,7 +234,7 @@ namespace Datas
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(201, 22);
             this.comboBox3.TabIndex = 22;
-            this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
+            // BARIS ERROR DIHAPUS DI SINI
             // 
             // numericUpDown1
             // 
@@ -259,7 +248,7 @@ namespace Datas
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(201, 19);
             this.numericUpDown1.TabIndex = 23;
-            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
+            // BARIS ERROR DIHAPUS DI SINI
             // 
             // MainForm
             // 
